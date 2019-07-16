@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <script type="module">
+            import { tag } from './bar.js';
+            import { sum } from './foo.js';
+            const h1 = tag('h1', '👋 Hello Modules!')
+            document.body.appendChild(h1);
+            document.getElementById("main").innerHTML=sum(12,5);
+        </script>
+    </head>
+    <body>
+        <h1 id="main">ahihi</h1>
+    </body>
+</html>
