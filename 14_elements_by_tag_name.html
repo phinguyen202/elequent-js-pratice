@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <h1>Heading with a <span>span</span> element.</h1>
+    <p>A paragraph with <span>one</span>, <span>two</span>
+      spans.</p>
+    <div>
+        <div>
+            <div><span>ahihi</span></div>
+        </div>
+        <div>
+            <h3>ahaha</h3>
+        </div>
+    </div>
+    <script>
+      function byTagName(node, tagName) {
+        tagName = tagName.toUpperCase();
+        function collect(nodeHtml, tagName, elementsResult = []) {
+            if (nodeHtml.nodeType === Node.TEXT_NODE) {
+                return elementsResult;
+            } else {
+                if (nodeHtml.tagName === tagName) {
+                    elementsResult.push(nodeHtml)
+                }
+                nodeHtml.childNodes.forEach(element => {
+                    elementsResult = collect(element, tagName, elementsResult);
+                })
+            }
+            return elementsResult;
+        }
+        return collect(node, tagName);
+      }
+    
+      console.log(byTagName(document.body, "h1").length);
+      // → 1
+      console.log(byTagName(document.body, "span").length);
+      // → 4
+      let para = document.querySelector("p");
+      console.log(byTagName(para, "span").length);
+      // → 2
+      console.log(byTagName(document.body, "div").length);
+      // → 4
+    </script>
+</body>
+
+</html>
