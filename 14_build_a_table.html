@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <h1>Mountains</h1>
+
+<div id="mountains"></div>
+
+<script>
+  const MOUNTAINS = [
+    {name: "Kilimanjaro", height: 5895, place: "Tanzania"},
+    {name: "Everest", height: 8848, place: "Nepal"},
+    {name: "Mount Fuji", height: 3776, place: "Japan"},
+    {name: "Vaalserberg", height: 323, place: "Netherlands"},
+    {name: "Denali", height: 6168, place: "United States"},
+    {name: "Popocatepetl", height: 5465, place: "Mexico"},
+    {name: "Mont Blanc", height: 4808, place: "Italy/France"}
+  ];
+
+  // Your code here
+    function buildTable(tableData) {
+        const mountainsDiv = document.getElementById("mountains");
+        const table = document.createElement('table');
+        const trHeader = document.createElement('tr');
+        Object.keys(tableData[0]).forEach(key => {
+            const thHeader = document.createElement('th');
+            const textNode = document.createTextNode(key);
+            thHeader.appendChild(textNode);
+            trHeader.appendChild(thHeader);
+        });
+        table.append(trHeader);
+
+        tableData.forEach(rowData => {
+            const trRow = document.createElement('tr');
+            Object.values(rowData).forEach(value => {
+                const tdRow = document.createElement('td');
+                const textNode = document.createTextNode(value);
+                if (!isNaN(value)) {
+                    tdRow.style.textAlign = "right";
+                }
+                tdRow.appendChild(textNode);
+                trRow.appendChild(tdRow);
+            });
+            table.append(trRow);
+        })
+        mountainsDiv.appendChild(table);
+    }
+    buildTable(MOUNTAINS);
+</script>
+</body>
+
+</html>
