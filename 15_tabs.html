@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+  <tab-panel>
+    <div data-tabname="one">Tab one</div>
+    <div data-tabname="two">Tab two</div>
+    <div data-tabname="three">Tab three</div>
+  </tab-panel>
+  <script>
+    function asTabs(node) {
+      var children = node.children;
+      for (var index = (children.length - 1); index >= 0; index--) {
+        var child = children[index];
+        if (index !== 0) {
+          child.style.display = 'none';
+        } else {
+          child.style.display = 'initial';
+        }
+        var tabButton = document.createElement('button');
+        var textNode = document.createTextNode(child.getAttribute('data-tabname'));
+        tabButton.appendChild(textNode);
+        document.body.prepend(tabButton);
+        tabButton.onclick = makeHelpCallback(child);
+      }
+    }
+
+    function makeHelpCallback(child) {
+      return function () {
+        showHelp(child);
+      };
+    }
+
+    function showHelp(child) {
+      var currentTab = document.querySelector('div:not([style*="display: none"])[data-tabname]');
+      currentTab.style.display = 'none';
+      child.style.display = 'initial';
+    }
+
+    asTabs(document.querySelector("tab-panel"));
+  </script>
+</body>
+
+</html>
