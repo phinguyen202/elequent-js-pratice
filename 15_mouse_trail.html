@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .trail { /* className for the trail elements */
+          position: absolute;
+          height: 6px; width: 6px;
+          border-radius: 3px;
+          background: teal;
+        }
+        body {
+          height: 300px;
+        }
+      </style>
+</head>
+
+<body>
+      <script>
+        document.addEventListener('mousemove', makingTrail);
+        function makingTrail(event) {
+            var div = document.createElement('div');
+            div.className = 'trail';
+            div.style.left = event.clientX + 'px';
+            div.style.top = event.clientY + 'px';
+            document.body.appendChild(div);
+        }
+      </script>
+</body>
+
+</html>
