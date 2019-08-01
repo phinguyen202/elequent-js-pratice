@@ -262,6 +262,7 @@ State.prototype.update = function (time, keys) {
     }
 
     for (let actor of actors) {
+        // This point may occured the issue when the player touch the lava and the last coin in the same time
         if (actor != player && overlap(actor, player)) {
             newState = actor.collide(newState);
         }
@@ -322,6 +323,7 @@ Player.prototype.update = function (time, state, keys) {
         pos = movedX;
     }
 
+    // when is the player is jump down ? => when time*gravity > this.speed.y
     let ySpeed = this.speed.y + time * gravity;
     let movedY = pos.plus(new Vec(0, ySpeed * time));
     if (!state.level.touches(movedY, this.size, "wall")) {
@@ -333,6 +335,8 @@ Player.prototype.update = function (time, state, keys) {
     }
     return new Player(pos, new Vec(xSpeed, ySpeed));
 };
+
+//=================== ANIMATION ====================
 
 function trackKeys(keys) {
     let down = Object.create(null);
@@ -347,13 +351,12 @@ function trackKeys(keys) {
     return down;
 }
 
-const arrowKeys =
-    trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
+const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
 
 function runAnimation(frameFunc) {
     let lastTime = null;
     function frame(time) {
-        if (lastTime != null) {
+        if (lastTime) {
             let timeStep = Math.min(time - lastTime, 100) / 1000;
             if (frameFunc(timeStep) === false) return;
         }
@@ -363,8 +366,8 @@ function runAnimation(frameFunc) {
     requestAnimationFrame(frame);
 }
 
-function runLevel(level, Display) {
-    let display = new Display(document.body, level);
+function runLevel(level) {
+    let display = new DOMDisplay(document.body, level);
     let state = State.start(level);
     let ending = 1;
     return new Promise(resolve => {
@@ -385,10 +388,9 @@ function runLevel(level, Display) {
     });
 }
 
-async function runGame(plans, Display) {
+async function runGame(plans) {
     for (let level = 0; level < plans.length;) {
-        let status = await runLevel(new Level(plans[level]),
-            Display);
+        let status = await runLevel(new Level(plans[level]));
         if (status == "won") level++;
     }
     console.log("You've won!");
