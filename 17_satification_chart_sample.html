@@ -1,0 +1,29 @@
+<canvas height="500" width="500"></canvas>
+<script>
+
+  const results = [
+  {name: "Satisfied", count: 1043, color: "lightblue"},
+  {name: "Neutral", count: 563, color: "lightgreen"},
+  {name: "Unsatisfied", count: 510, color: "pink"},
+  {name: "No comment", count: 175, color: "silver"}
+];
+
+function satisfactionChart(data) {
+  const totalCount = data.reduce((sum, {count}) => {
+    return sum + count;
+  }, 0);
+  let cx = document.querySelector("canvas").getContext("2d");
+  let currentAngle = -0.5 * Math.PI;
+  data.forEach(part => {
+    const toAngle = (part.count / totalCount)* 2 * Math.PI;;
+    cx.beginPath();
+    cx.arc(100, 100, 100, currentAngle, currentAngle + toAngle);
+    currentAngle += toAngle;
+    cx.lineTo(100, 100);
+    cx.fillStyle = part.color;
+    cx.fill();
+  })
+}
+
+satisfactionChart(results);
+</script>
