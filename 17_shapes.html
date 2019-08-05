@@ -1,0 +1,81 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas height="1000" width="1000"></canvas>
+    <script>
+        let cx = document.querySelector("canvas").getContext("2d");
+        function trapezoid() {
+            cx.beginPath();
+            cx.moveTo(10, 60);
+            cx.lineTo(20, 10);
+            cx.lineTo(60, 10);
+            cx.lineTo(70, 60);
+            cx.closePath();
+            cx.stroke();
+        }
+        trapezoid();
+
+        function diamond() {
+            cx.save();
+            cx.translate(120, 10);
+            cx.rotate(Math.PI/4);
+            cx.beginPath();
+            cx.moveTo(0,0);
+            cx.lineTo(0, 40);
+            cx.lineTo(40, 40);
+            cx.lineTo(40, 0);
+            cx.closePath();
+            cx.fillStyle = 'red';
+            cx.fill();
+            cx.restore();
+        }
+        diamond();
+
+        function zigzag(startX, startY, times = 6, height = 60, width = 60) {
+            const adjustedHeight = height/times;
+            cx.beginPath();
+            cx.moveTo(startX, startY);
+            for (let i = 1; i <= times; i++) {
+                startY = startY + adjustedHeight;
+                cx.lineTo(startX + width, startY);
+                startY = startY + adjustedHeight;
+                cx.lineTo(startX, startY);
+            }
+            cx.stroke();
+        }
+        zigzag(200, 20);
+
+        function spiral(centerX, centerY, radius = 3, loopTime = 3) {
+            cx.beginPath();
+            const pis = loopTime*2*Math.PI;
+            let angle = 0;
+            cx.moveTo(centerX, centerY);
+            while (angle <= pis) {
+                cx.lineTo(Math.cos(angle) * radius*angle + centerX, Math.sin(angle) * radius*angle + centerY);
+                angle += 0.1;
+            }
+            cx.stroke();
+        }
+        spiral(350, 60);
+
+        function star(centerX, centerY, radius) {
+            cx.beginPath();
+            let angle = 0;
+            const twoPI = Math.PI *2;
+            cx.moveTo(centerX + radius, centerY);
+            while (angle <= twoPI) {
+                cx.quadraticCurveTo(centerX, centerY, Math.cos(angle)*radius + centerX, Math.sin(angle)*radius +centerY);
+                angle += Math.PI/4;
+            }
+            cx.fillStyle = 'orange';
+            cx.fill();
+        }
+        star(500, 60, 60);
+    </script>
+</body>
+</html>

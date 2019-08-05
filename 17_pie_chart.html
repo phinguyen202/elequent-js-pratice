@@ -1,0 +1,50 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <canvas height="500" width="500"></canvas>
+  <script>
+
+    const results = [
+      { name: "Satisfied", count: 1043, color: "lightblue" },
+      { name: "Neutral", count: 563, color: "lightgreen" },
+      { name: "Unsatisfied", count: 510, color: "pink" },
+      { name: "No comment", count: 175, color: "silver" }
+    ];
+
+    function satisfactionChart(data) {
+      const totalCount = data.reduce((sum, { count }) => {
+        return sum + count;
+      }, 0);
+      let cx = document.querySelector("canvas").getContext("2d");
+      let currentAngle = -0.5 * Math.PI;
+      data.forEach(part => {
+        const toAngle = (part.count / totalCount) * 2 * Math.PI;;
+        cx.beginPath();
+        cx.arc(200, 200, 100, currentAngle, currentAngle + toAngle);
+        cx.lineTo(200, 200);
+        cx.fillStyle = part.color;
+        cx.fill();
+        // drawn name
+        let x = Math.cos(currentAngle + toAngle/2)*100 +200;
+        let y = Math.sin(currentAngle + toAngle/2)*100 +200;
+        cx.textBaseline = 'middle';
+        cx.textAlign = Math.cos(currentAngle + toAngle/2) <= 0 ? 'right' : 'left';
+        cx.fillStyle = 'brown';
+        cx.fillText(part.name, x, y);
+        currentAngle += toAngle;
+      })
+    }
+
+    satisfactionChart(results);
+  </script>
+</body>
+
+</html>
