@@ -1,0 +1,30 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <textarea id="code">return "hi";</textarea>
+    <button id="button">Run</button>
+    <pre id="output"></pre>
+
+    <script>
+        let button = document.getElementById('button');
+        button.addEventListener("click", () => {
+            let textarea = document.getElementById('code');
+            let output = document.getElementById("output");
+            try {
+                const result = Function('a',textarea.value);
+                output.innerText = result(); 
+            } catch (error) {
+                output.innerText='Cannot perform the function, please edit and try again!'; 
+            }
+        });
+    </script>
+</body>
+
+</html>

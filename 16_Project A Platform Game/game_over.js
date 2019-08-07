@@ -348,10 +348,11 @@ function trackKeys(keys) {
     }
     window.addEventListener("keydown", track);
     window.addEventListener("keyup", track);
+    window.addEventListener('Escape', track);
     return down;
 }
 
-const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp", "Escape"]);
+const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
 
 function runAnimation(frameFunc) {
     let lastTime = null;

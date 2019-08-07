@@ -351,7 +351,7 @@ function trackKeys(keys) {
     return down;
 }
 
-const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
+const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight"]);
 
 function runAnimation(frameFunc) {
     let lastTime = null;
@@ -370,22 +370,36 @@ function runLevel(level) {
     let display = new DOMDisplay(document.body, level);
     let state = State.start(level);
     let ending = 1;
-    return new Promise(resolve => {
-        runAnimation(time => {
-            state = state.update(time, arrowKeys);
-            display.syncState(state);
-            if (state.status == "playing") {
-                return true;
-            } else if (ending > 0) {
-                ending -= time;
-                return true;
-            } else {
-                display.clear();
-                resolve(state.status);
-                return false;
-            }
-        });
+    let isPausing = false;
+    runAnimation(time => {
+        if (isPausing) {
+            return false;
+        }
+        state = state.update(time, arrowKeys);
+        display.syncState(state);
+        if (state.status == "playing") {
+            return true;
+        } else if (ending > 0) {
+            ending -= time;
+            return true;
+        } else {
+            display.clear();
+            resolve(state.status);
+            return false;
+        }
     });
+    document.addEventListener('keydown', event => {
+        if (event.key == "Escape") {
+            isPausing = !isPausing;
+            if (!isPausing) {
+                result();
+            }
+        }
+    });
+    let promise = new Promise(resolve => {
+        result;
+    });
+    return promise;
 }
 
 async function runGame(plans) {
