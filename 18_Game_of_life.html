@@ -1,0 +1,110 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body style="margin-left: 700px;">
+    <div id='table'>
+        
+    </div>
+    <button id="nextGen">Next Generation</button>
+    
+    <script>
+        // two demension array, true = alive, false = dead
+        let popularM = [];
+
+        function random(x, y, livePercent) {
+            let twoDemensionArray = [];
+            livePercent = livePercent / 100;
+            for (let i = 0; i < y; i++) {
+                const yDemensionArray = [];
+                for (let j = 0; j < x; j++) {
+                    if (Math.random() < livePercent) {
+                        yDemensionArray[j] = true;
+                    } else {
+                        yDemensionArray[j] = false;
+                    }
+                }
+                twoDemensionArray[i] = yDemensionArray;
+            }
+            return twoDemensionArray;
+        }
+
+        function initMap(array) {
+            const table = document.getElementById('table');
+            for (let i = 0; i < array.length; i++) {
+                for (let j = 0; j < array[i].length; j++) {
+                    const cb = document.createElement('input');
+                    cb.setAttribute("type", "checkbox");
+                    cb.checked = array[i][j];
+                    cb.addEventListener("click", event => {
+                        toggleCheckbox(i, j, event.currentTarget.checked)
+                    });
+                    table.appendChild(cb);
+                }
+                table.appendChild(document.createElement('br'));
+            }
+        }
+
+        function nextGeneration() {
+            let nextGeneration = [];
+            const yMax = popularM.length;
+            const yMaxSubtract = yMax - 1;
+            const xMax = popularM[0].length;
+            const xMaxSubtract = xMax -1;
+            for (let i = 0; i < yMax; i++) {
+                const neighbors = [];
+                for (let j = 0; j < xMax; j++) {
+                   let aliveNeighbor = 0;
+                   i > 0 && j > 0 && popularM[i-1][j-1] ? aliveNeighbor++ : null;
+                   i > 0 && popularM[i-1][j] ? aliveNeighbor++ : null;
+                   i > 0 && j < xMaxSubtract && popularM[i-1][j+1] ? aliveNeighbor++ : null;
+                   i < yMaxSubtract && j > 0 && popularM[i+1][j-1] ? aliveNeighbor++ : null;
+                   i < yMaxSubtract && popularM[i+1][j] ? aliveNeighbor++ : null;
+                   i < yMaxSubtract && j < xMaxSubtract && popularM[i+1][j+1] ? aliveNeighbor++ : null;
+                   j > 0 && popularM[i][j-1] ? aliveNeighbor++ : null;
+                   j < xMaxSubtract && popularM[i][j+1] ? aliveNeighbor++ : null;
+                   console.log(aliveNeighbor);
+                    if(aliveNeighbor < 2 || aliveNeighbor > 3) {
+                        neighbors[j] = false;
+                    } else if (aliveNeighbor === 3) {
+                        neighbors[j] = true;
+                    } else {
+                        neighbors[j] = popularM[i][j];
+                    }
+                }
+                nextGeneration[i] = neighbors;
+            }
+            return nextGeneration;
+        }
+
+        function updateMap(array) {
+            const cbs = document.getElementsByTagName('input');
+            let index = 0;
+            for (let i = 0; i < array.length; i++) {
+                for (let j = 0; j < array[i].length; j++) {
+                    cbs[index].checked = array[i][j];
+                    index++;
+                }
+            }
+        }
+        
+        function toggleCheckbox(y, x, isChecked) {
+            popularM[y][x] = isChecked;
+        }
+
+        popularM = random(30, 30, 50);
+        initMap(popularM);
+
+        document.getElementById('nextGen').addEventListener('click', event => {
+            popularM = nextGeneration();
+            updateMap(popularM);
+        })
+    </script>
+</body>
+
+</html>
