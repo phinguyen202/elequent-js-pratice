@@ -1,16 +1,13 @@
-// import { elt } from "./19_buildDomFn.js";
+import { elt } from "./19_buildDomFn.js";
 
-
-function elt(type, props, ...children) {
-    let dom = document.createElement(type);
-    if (props) Object.assign(dom, props);
-    for (let child of children) {
-        if (typeof child != "string") dom.appendChild(child);
-        else dom.appendChild(document.createTextNode(child));
-    }
-    return dom;
+export {
+    Picture as Picture,
+    updateState as updateState,
+    PixelEditor as PixelEditor,
+    ToolSelect as ToolSelect,
+    ColorSelect as ColorSelect,
+    draw, fill, rectangle, pick
 }
-
 class Picture {
     constructor(width, height, pixels) {
         this.width = width;
@@ -131,6 +128,7 @@ class PixelEditor {
             ...this.controls.reduce(
                 (a, c) => a.concat(" ", c.dom), []));
     }
+
     syncState(state) {
         this.state = state;
         this.canvas.syncState(state.picture);
