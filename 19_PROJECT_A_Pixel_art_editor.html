@@ -1,0 +1,31 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script language="JavaScript" type="text/javascript" src="19_pantingEditor.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div></div>
+    <script>
+        let state = {
+            tool: "draw",
+            color: "#000000",
+            picture: Picture.empty(60, 30, "#f0f0f0")
+        };
+        let app = new PixelEditor(state, {
+            tools: { draw, fill, rectangle, pick },
+            controls: [ToolSelect, ColorSelect],
+            dispatch(action) {
+                state = updateState(state, action);
+                app.syncState(state);
+            }
+        });
+        document.querySelector("div").appendChild(app.dom);
+    </script>
+</body>
+
+</html>
