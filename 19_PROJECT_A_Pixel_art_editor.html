@@ -14,6 +14,7 @@
             Picture, PixelEditor, draw, fill, rectangle, pick, ToolSelect,
             ColorSelect, updateState, SaveButton, LoadButton, UndoButton, historyUpdateState
         } from './19_pantingEditor.js';
+        
         const startState = {
             tool: "draw",
             color: "#000000",
@@ -24,9 +25,7 @@
 
         const baseTools = { draw, fill, rectangle, pick };
 
-        const baseControls = [
-            ToolSelect, ColorSelect, SaveButton, LoadButton, UndoButton
-        ];
+        const baseControls = [ToolSelect, ColorSelect, SaveButton, LoadButton, UndoButton];
 
         function startPixelEditor({ state = startState,
             tools = baseTools,
