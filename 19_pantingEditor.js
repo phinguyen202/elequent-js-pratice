@@ -49,20 +49,36 @@ class PictureCanvas {
     }
     syncState(picture) {
         if (this.picture == picture) return;
+        drawPicture(picture, this.dom, scale, this.picture);
         this.picture = picture;
-        drawPicture(this.picture, this.dom, scale);
     }
 }
 
-function drawPicture(picture, canvas, scale) {
-    canvas.width = picture.width * scale;
-    canvas.height = picture.height * scale;
+function drawPicture(picture, canvas, scale, oldPicture) {
+    if (!oldPicture ||
+        picture.height != oldPicture.height ||
+        picture.width != oldPicture.width) {
+        canvas.width = picture.width * scale;
+        canvas.height = picture.height * scale;
+        oldPicture = undefined;
+    }
     let cx = canvas.getContext("2d");
 
-    for (let y = 0; y < picture.height; y++) {
-        for (let x = 0; x < picture.width; x++) {
-            cx.fillStyle = picture.pixel(x, y);
-            cx.fillRect(x * scale, y * scale, scale, scale);
+    if (!oldPicture) {
+        for (let y = 0; y < picture.height; y++) {
+            for (let x = 0; x < picture.width; x++) {
+                cx.fillStyle = picture.pixel(x, y);
+                cx.fillRect(x * scale, y * scale, scale, scale);
+            }
+        }
+    } else {
+        for (let y = 0; y < picture.height; y++) {
+            for (let x = 0; x < picture.width; x++) {
+                if (picture.pixel(x, y) !== oldPicture.pixel(x, y)) {
+                    cx.fillStyle = picture.pixel(x, y);
+                    cx.fillRect(x * scale, y * scale, scale, scale);
+                }
+            }
         }
     }
 }
