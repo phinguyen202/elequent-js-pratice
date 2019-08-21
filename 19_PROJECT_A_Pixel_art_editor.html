@@ -11,7 +11,7 @@
     <div></div>
     <script type="module">
         import {
-            Picture, PixelEditor, draw, fill, rectangle, pick, ToolSelect,
+            Picture, PixelEditor, draw, fill, rectangle, circle, pick, ToolSelect,
             ColorSelect, updateState, SaveButton, LoadButton, UndoButton, historyUpdateState
         } from './19_pantingEditor.js';
         
@@ -23,7 +23,7 @@
             doneAt: 0
         };
 
-        const baseTools = { draw, fill, rectangle, pick };
+        const baseTools = { draw, fill, rectangle, circle, pick };
 
         const baseControls = [ToolSelect, ColorSelect, SaveButton, LoadButton, UndoButton];
 
