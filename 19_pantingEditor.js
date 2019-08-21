@@ -6,7 +6,7 @@ export {
     PixelEditor as PixelEditor,
     ToolSelect as ToolSelect,
     ColorSelect as ColorSelect,
-    draw, fill, rectangle, circle, pick,
+    draw, fill, rectangle, circle, line, pick,
     SaveButton, LoadButton, UndoButton, historyUpdateState
 }
 class Picture {
@@ -199,6 +199,51 @@ function draw(pos, state, dispatch) {
     }
     drawPixel(pos, state);
     return drawPixel;
+}
+
+function line(pos, state, dispatch) {
+    let lastPos = pos;
+    function drawLine({ x, y }, state) {
+        if (x === lastPos.x && y === lastPos.y) return;
+        const xToX = x - lastPos.y;
+        const yToY = y - lastPos.y;
+        let drawn = [];
+        if (xToX - yToY > 0) {
+            const disY = Math.ceil(xToX/yToY);
+            const xThanPosX = x > lastPos.x;
+            const yPlus = y > lastPos.y;
+            let currentY = y;
+            let yReacted = 0;
+            for (let dx = lastPos.x; dx !== x; xThanPosX ? dx++ : dx--) {
+                yReacted++;
+                if (yReacted === disY) {
+                    yReacted = 0;
+                    yPlus ? ++currentY : --currentY;
+                }
+                drawn.push({ x: dx, y: currentY, color: state.color })
+            }
+        } else {
+            const disX = Math.ceil(yToY/xToX);
+            const yThanPosY = y > lastPos.y;
+            const xPlus = x > lastPos.x;
+            let currentX = x;
+            let xReacted = 0;
+            for (let dy = lastPos.y; dy !== y; yThanPosY ? dy++ : dy--) {
+                xReacted++;
+                if (xReacted === disX) {
+                    xReacted = 0;
+                    xPlus ? ++currentX : --currentX;
+                }
+                drawn.push({ x: currentX, y: dy, color: state.color })
+            }
+        }
+        dispatch({ picture: state.picture.draw(drawn) });
+        // saving last pos
+        lastPos.x = x;
+        lastPos.y = y;
+    }
+    drawLine(pos, state);
+    return drawLine;
 }
 
 function rectangle(start, state, dispatch) {
