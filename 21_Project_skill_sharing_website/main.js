@@ -1,16 +1,17 @@
 const { createServer } = require("http");
 const Router = require("./router.js");
 const ecstatic = require("ecstatic");
+const fs = require("fs");
 
 const router = new Router();
 const defaultHeaders = { "Content-Type": "text/plain" };
+const fileStorage = './data.json'
 
 class SkillShareServer {
     constructor(talks) {
         this.talks = talks;
         this.version = 0;
         this.waiting = [];
-        console.log('ahihi');
 
         let fileServer = ecstatic({ root: "./public" });
         this.server = createServer((request, response) => {
@@ -52,6 +53,10 @@ SkillShareServer.prototype.talkResponse = function () {
     };
 };
 
+SkillShareServer.prototype.updateStorage = function (data) {
+    fs.writeFile(fileStorage, data, error => console.log(error));
+};
+
 SkillShareServer.prototype.waitForChanges = function (time) {
     return new Promise(resolve => {
         this.waiting.push(resolve);
@@ -66,11 +71,31 @@ SkillShareServer.prototype.waitForChanges = function (time) {
 SkillShareServer.prototype.updated = function () {
     this.version++;
     let response = this.talkResponse();
+    this.updateStorage(response.body);
     this.waiting.forEach(resolve => resolve(response));
     this.waiting = [];
 };
 
-new SkillShareServer(Object.create(null)).start(8000);
+function startServer() {
+    if (fs.existsSync(fileStorage)) {
+        fs.readFile(fileStorage, (err, data) => {
+            if (err) {
+                console.log(err);
+                new SkillShareServer(Object.create(null)).start(8000);
+            } else {
+                let talks;
+                try {
+                    talks = JSON.parse(data);
+                } catch (e) {}
+                new SkillShareServer(talks ? talks : Object.create(null)).start(8000);
+            }
+        });
+    } else {
+        new SkillShareServer(Object.create(null)).start(8000);
+    }
+}
+
+startServer();
 
 router.add("GET", /^\/talks$/, async (server, request) => {
     let tag = /"(.*)"/.exec(request.headers["if-none-match"]);
@@ -129,6 +154,7 @@ router.add("PUT", talkPath, async (server, title, request) => {
 router.add("POST", /^\/talks\/([^\/]+)\/comments$/,
     async (server, title, request) => {
         let requestBody = await readStream(request);
+        console.log(server.talks,title,requestBody);
         let comment;
         try { comment = JSON.parse(requestBody); }
         catch (_) { return { status: 400, body: "Invalid JSON" }; }
@@ -137,8 +163,9 @@ router.add("POST", /^\/talks\/([^\/]+)\/comments$/,
             typeof comment.author != "string" ||
             typeof comment.message != "string") {
             return { status: 400, body: "Bad comment data" };
-        } else if (title in server.talks) {
-            server.talks[title].comments.push(comment);
+        } else if (server.talks.some(talk => talk.title === title)) {
+            const talk = server.talks.find(talk => talk.title === title);
+            talk.comments.push(comment);
             server.updated();
             return { status: 204 };
         } else {
