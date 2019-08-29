@@ -1,5 +1,5 @@
 const { createServer } = require("http");
-const Router = require("./router");
+const Router = require("./router.js");
 const ecstatic = require("ecstatic");
 
 const router = new Router();
@@ -10,6 +10,7 @@ class SkillShareServer {
         this.talks = talks;
         this.version = 0;
         this.waiting = [];
+        console.log('ahihi');
 
         let fileServer = ecstatic({ root: "./public" });
         this.server = createServer((request, response) => {
@@ -144,6 +145,7 @@ router.add("POST", /^\/talks\/([^\/]+)\/comments$/,
             return { status: 404, body: `No talk '${title}' found` };
         }
     });
+
 function readStream(stream) {
     return new Promise((resolve, reject) => {
         let data = "";
